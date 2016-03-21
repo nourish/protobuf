@@ -42,6 +42,7 @@ import (
 	_ "github.com/nourish/protobuf/plugin/defaultcheck"
 	_ "github.com/nourish/protobuf/plugin/description"
 	_ "github.com/nourish/protobuf/plugin/embedcheck"
+	_ "github.com/nourish/protobuf/plugin/enumsetter"
 	_ "github.com/nourish/protobuf/plugin/enumstringer"
 	_ "github.com/nourish/protobuf/plugin/equal"
 	_ "github.com/nourish/protobuf/plugin/face"
