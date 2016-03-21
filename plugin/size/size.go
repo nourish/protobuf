@@ -199,6 +199,9 @@ func (p *size) sizeZigZag() {
 }
 
 func (p *size) generateField(proto3 bool, file *generator.FileDescriptor, message *generator.Descriptor, field *descriptor.FieldDescriptorProto, sizeName string) {
+	if gogoproto.ShouldSkip(field) {
+		return
+	}
 	fieldname := p.GetOneOfFieldName(message, field)
 	nullable := gogoproto.IsNullable(field)
 	repeated := field.IsRepeated()
@@ -273,6 +276,20 @@ func (p *size) generateField(proto3 bool, file *generator.FileDescriptor, messag
 			p.P(`n+=`, strconv.Itoa(key), `+sov`, p.localName, `(uint64(e))`)
 			p.Out()
 			p.P(`}`)
+		} else if gogoproto.GetCustomType(field) == "time.Time" {
+			if gogoproto.IsNullable(field) {
+				p.P(`if m.`, fieldname, ` != nil {`)
+				p.In()
+				p.P(`n+=`, strconv.Itoa(key), `+sov`, p.localName, `(uint64((*m.`, fieldname, `).Unix()))`)
+				p.Out()
+				p.P(`}`)
+			} else {
+				p.P(`if !m.`, fieldname, `.IsZero() {`)
+				p.In()
+				p.P(`n+=`, strconv.Itoa(key), `+sov`, p.localName, `(uint64(m.`, fieldname, `.Unix()))`)
+				p.Out()
+				p.P(`}`)
+			}
 		} else if proto3 {
 			p.P(`if m.`, fieldname, ` != 0 {`)
 			p.In()

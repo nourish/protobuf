@@ -119,6 +119,7 @@ extend google.protobuf.FieldOptions {
   optional string castkey = 65008;
   optional string castvalue = 65009;
   optional FieldBinding binding = 65010;
+  optional bool skip = 65011;
 }
 
 message FieldBinding {

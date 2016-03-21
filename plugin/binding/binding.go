@@ -226,7 +226,7 @@ func (p *plugin) generateValidationMessage(file *generator.FileDescriptor, messa
 				formName = jsonName
 			}
 		}
-		variableName := "this.Get" + fieldName + "()"
+		variableName := "this." + fieldName
 		repeated := field.IsRepeated()
 		if repeated {
 			p.P(`for _, item := range `, variableName, `{`)
@@ -388,7 +388,7 @@ func (p *plugin) generateStringValidator(variableName string, ccTypeName string,
 		p.P(`}`)
 	}
 	if binding.ValidRegex != nil {
-		p.P(`if !`, p.regexName(ccTypeName, fieldName), `.MatchString(this.Get`, fieldName, `()) {`)
+		p.P(`if !`, p.regexName(ccTypeName, fieldName), `.MatchString(this.`, fieldName, `) {`)
 		p.In()
 		msg := customMsg
 		if msg == "" {

@@ -238,6 +238,33 @@ func (p *unmarshal) decodeVarint(varName string, typName string) {
 	p.P(`}`)
 }
 
+func (p *unmarshal) decodeTime(varName string, typName string) {
+	p.P(`for shift := uint(0); ; shift += 7 {`)
+	p.In()
+	p.P(`if shift >= 64 {`)
+	p.In()
+	p.P(`return ErrIntOverflow` + p.localName)
+	p.Out()
+	p.P(`}`)
+	p.P(`if iNdEx >= l {`)
+	p.In()
+	p.P(`return `, p.ioPkg.Use(), `.ErrUnexpectedEOF`)
+	p.Out()
+	p.P(`}`)
+	p.P(`b := data[iNdEx]`)
+	p.P(`iNdEx++`)
+	p.P(`var timestamp int64`)
+	p.P(`timestamp |= (int64(b) & 0x7F) << shift`)
+	p.P(varName + ` = time.Unix(timestamp, 0)`)
+	p.P(`if b < 0x80 {`)
+	p.In()
+	p.P(`break`)
+	p.Out()
+	p.P(`}`)
+	p.Out()
+	p.P(`}`)
+}
+
 func (p *unmarshal) decodeFixed32(varName string, typeName string) {
 	p.P(`if (iNdEx+4) > l {`)
 	p.In()
@@ -420,6 +447,9 @@ func (p *unmarshal) noStarOrSliceType(msg *generator.Descriptor, field *descript
 }
 
 func (p *unmarshal) field(file *generator.FileDescriptor, msg *generator.Descriptor, field *descriptor.FieldDescriptorProto, fieldname string, proto3 bool) {
+	if gogoproto.ShouldSkip(field) {
+		return
+	}
 	repeated := field.IsRepeated()
 	nullable := gogoproto.IsNullable(field)
 	typ := p.noStarOrSliceType(msg, field)
@@ -498,6 +528,13 @@ func (p *unmarshal) field(file *generator.FileDescriptor, msg *generator.Descrip
 			p.P(`var v `, typ)
 			p.decodeVarint("v", typ)
 			p.P(`m.`, fieldname, ` = append(m.`, fieldname, `, v)`)
+		} else if gogoproto.GetCustomType(field) == "time.Time" && gogoproto.IsNullable(field) {
+			p.P(`var v `, typ)
+			p.decodeTime("v", typ)
+			p.P(`m.`, fieldname, ` = &v`)
+		} else if gogoproto.GetCustomType(field) == "time.Time" && !gogoproto.IsNullable(field) {
+			p.P(`m.`, fieldname, ` = time.Time{}`)
+			p.decodeTime("m."+fieldname, typ)
 		} else if proto3 || !nullable {
 			p.P(`m.`, fieldname, ` = 0`)
 			p.decodeVarint("m."+fieldname, typ)

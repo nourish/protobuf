@@ -306,6 +306,10 @@ func BindingEnabledAll(file *google_protobuf.FileDescriptorProto) bool {
 	return proto.GetBoolExtension(file.Options, E_BindingEnabledAll, true)
 }
 
+func ShouldSkip(field *google_protobuf.FieldDescriptorProto) bool {
+	return proto.GetBoolExtension(field.Options, E_Skip, false)
+}
+
 func IsProto3(file *google_protobuf.FileDescriptorProto) bool {
 	return file.GetSyntax() == "proto3"
 }

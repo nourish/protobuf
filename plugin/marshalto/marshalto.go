@@ -375,6 +375,10 @@ func (this orderFields) Swap(i, j int) {
 }
 
 func (p *marshalto) generateField(proto3 bool, numGen NumGen, file *generator.FileDescriptor, message *generator.Descriptor, field *descriptor.FieldDescriptorProto) {
+	if gogoproto.ShouldSkip(field) {
+		return
+	}
+
 	fieldname := p.GetOneOfFieldName(message, field)
 	nullable := gogoproto.IsNullable(field)
 	repeated := field.IsRepeated()
@@ -573,6 +577,22 @@ func (p *marshalto) generateField(proto3 bool, numGen NumGen, file *generator.Fi
 			p.callVarint("num")
 			p.Out()
 			p.P(`}`)
+		} else if gogoproto.GetCustomType(field) == "time.Time" {
+			if gogoproto.IsNullable(field) {
+				p.P(`if m.`, fieldname, ` != nil {`)
+				p.In()
+				p.encodeKey(fieldNumber, wireType)
+				p.callVarint(`(*m.`, fieldname, `).Unix()`)
+				p.Out()
+				p.P(`}`)
+			} else {
+				p.P(`if !m.`, fieldname, `.IsZero() {`)
+				p.In()
+				p.encodeKey(fieldNumber, wireType)
+				p.callVarint(`m.`, fieldname, `.Unix()`)
+				p.Out()
+				p.P(`}`)
+			}
 		} else if proto3 {
 			p.P(`if m.`, fieldname, ` != 0 {`)
 			p.In()
