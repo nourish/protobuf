@@ -385,6 +385,7 @@ func (p *marshalto) generateField(proto3 bool, numGen NumGen, file *generator.Fi
 	required := field.IsRequired()
 
 	protoSizer := gogoproto.IsProtoSizer(file.FileDescriptorProto, message.DescriptorProto)
+	doNilCheck := gogoproto.NeedsNilCheck(proto3, field)
 	if required && nullable {
 		p.P(`if m.`, fieldname, `== nil {`)
 		p.In()
@@ -398,8 +399,7 @@ func (p *marshalto) generateField(proto3 bool, numGen NumGen, file *generator.Fi
 	} else if repeated {
 		p.P(`if len(m.`, fieldname, `) > 0 {`)
 		p.In()
-	} else if ((!proto3 || field.IsMessage()) && nullable) ||
-		(*field.Type == descriptor.FieldDescriptorProto_TYPE_BYTES && !gogoproto.IsCustomType(field)) {
+	} else if doNilCheck {
 		p.P(`if m.`, fieldname, ` != nil {`)
 		p.In()
 	}
@@ -1148,10 +1148,7 @@ func (p *marshalto) generateField(proto3 bool, numGen NumGen, file *generator.Fi
 	default:
 		panic("not implemented")
 	}
-	if (required && nullable) ||
-		((!proto3 || field.IsMessage()) && nullable) ||
-		repeated ||
-		(*field.Type == descriptor.FieldDescriptorProto_TYPE_BYTES && !gogoproto.IsCustomType(field)) {
+	if (required && nullable) || repeated || doNilCheck {
 		p.Out()
 		p.P(`}`)
 	}

@@ -1,5 +1,5 @@
 // Copyright (c) 2015, Vastech SA (PTY) LTD. All rights reserved.
-// http://github.com/nourish/protobuf/gogoproto
+// http://github.com/gogo/protobuf/gogoproto
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
@@ -27,14 +27,35 @@
 package theproto3
 
 import (
+	"reflect"
 	"testing"
 
-	"github.com/nourish/protobuf/proto"
+	"github.com/gogo/protobuf/proto"
 )
 
 func TestNilMaps(t *testing.T) {
 	m := &AllMaps{StringToMsgMap: map[string]*FloatingPoint{"a": nil}}
 	if _, err := proto.Marshal(m); err == nil {
 		t.Fatalf("expected error")
+	}
+}
+
+func TestCustomTypeSize(t *testing.T) {
+	m := &Uint128Pair{}
+	m.Size() // Should not panic.
+}
+
+func TestCustomTypeMarshalUnmarshal(t *testing.T) {
+	m1 := &Uint128Pair{}
+	if b, err := proto.Marshal(m1); err != nil {
+		t.Fatal(err)
+	} else {
+		m2 := &Uint128Pair{}
+		if err := proto.Unmarshal(b, m2); err != nil {
+			t.Fatal(err)
+		}
+		if !reflect.DeepEqual(m1, m2) {
+			t.Errorf("expected %+v, got %+v", m1, m2)
+		}
 	}
 }

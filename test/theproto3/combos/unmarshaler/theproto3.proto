@@ -93,9 +93,9 @@ message Nested {
 }
 
 enum MapEnum {
-    MA = 0;
-    MB = 1;
-    MC = 2;
+  MA = 0;
+  MB = 1;
+  MC = 2;
 }
 
 message AllMaps {
@@ -151,6 +151,17 @@ message FloatingPoint {
 }
 
 message Uint128Pair {
+<<<<<<< HEAD
     bytes left = 1 [ (gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/nourish/protobuf/test/custom.Uint128" ];
     bytes right = 2 [ (gogoproto.customtype) = "github.com/nourish/protobuf/test/custom.Uint128" ];
+=======
+  bytes left = 1 [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/gogo/protobuf/test/custom.Uint128"];
+  bytes right = 2 [(gogoproto.customtype) = "github.com/gogo/protobuf/test/custom.Uint128"];
+>>>>>>> 4f262e4b0f3a6cea646e15798109335551e21756
+}
+
+message ContainsNestedMap {
+	message NestedMap {
+		map<string, double> NestedMapField = 1;
+	}
 }
