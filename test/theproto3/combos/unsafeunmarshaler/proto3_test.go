@@ -35,7 +35,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/gogo/protobuf/proto"
+	"github.com/nourish/protobuf/proto"
 >>>>>>> 4f262e4b0f3a6cea646e15798109335551e21756:test/theproto3/combos/unsafeunmarshaler/proto3_test.go
 )
 

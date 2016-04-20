@@ -34,7 +34,7 @@ regenerate:
 	go install github.com/nourish/protobuf/protoc-gen-combo
 	protoc-gen-combo --version="3.0.0" --proto_path=../../../../../:../../protobuf/:. theproto3.proto
 =======
-	go install github.com/gogo/protobuf/protoc-gen-combo
+	go install github.com/nourish/protobuf/protoc-gen-combo
 	protoc-gen-combo --version="3.0.0" --proto_path=../../../../../:../../protobuf/:. theproto3.proto
 	find combos -type d -not -name combos -exec cp proto3_test.go.in {}/proto3_test.go \;
 >>>>>>> 4f262e4b0f3a6cea646e15798109335551e21756

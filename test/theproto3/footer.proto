@@ -14,8 +14,8 @@ message Uint128Pair {
     bytes left = 1 [ (gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/nourish/protobuf/test/custom.Uint128" ];
     bytes right = 2 [ (gogoproto.customtype) = "github.com/nourish/protobuf/test/custom.Uint128" ];
 =======
-  bytes left = 1 [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/gogo/protobuf/test/custom.Uint128"];
-  bytes right = 2 [(gogoproto.customtype) = "github.com/gogo/protobuf/test/custom.Uint128"];
+  bytes left = 1 [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/nourish/protobuf/test/custom.Uint128"];
+  bytes right = 2 [(gogoproto.customtype) = "github.com/nourish/protobuf/test/custom.Uint128"];
 >>>>>>> 4f262e4b0f3a6cea646e15798109335551e21756
 }
 
